@@ -1,10 +1,17 @@
 import pytest
+import tempfile
 from selenium import webdriver
 from src import AuthorisationPage, generate_user_data
 
 
 @pytest.fixture()
 def driver():
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument(f"--user-data-dir={tempfile.mkdtemp()}")
     driver = webdriver.Chrome()
     yield driver
     driver.quit()
