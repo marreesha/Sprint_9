@@ -1,16 +1,22 @@
 import pytest
+import tempfile
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
 from src import AuthorisationPage, generate_user_data
 
 
 @pytest.fixture()
 def driver():
-    chrome_options = Options()
-    chrome_options.add_argument("--user-data-dir=/path/to/unique/directory")
-    driver = webdriver.Chrome(options=chrome_options)
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+    options.add_argument(f"--user-data-dir={tempfile.mkdtemp()}")
+    driver = webdriver.Chrome(options=options)
+
     yield driver
+
     driver.quit()
 
 
